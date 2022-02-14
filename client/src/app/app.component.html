@@ -1,0 +1,18 @@
+<div class="navbar">
+    <nav>
+        <a routerLink="public" routerLinkActive="active-link">Public Route</a>
+        <a routerLink="private" routerLinkActive="active-link">Private Route</a>
+    </nav>
+    <span class="flex-spacer"></span>
+    <span>
+        <ng-container *ngIf="identityClaims; else unauthenticated">
+            {{'Logged in as: ' + identityClaims?.name}}
+        </ng-container>
+    </span>
+</div>
+
+<main>
+    <router-outlet></router-outlet>
+</main>
+
+<ng-template #unauthenticated>Unauthenticated</ng-template>

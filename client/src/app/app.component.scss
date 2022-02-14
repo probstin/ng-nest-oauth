@@ -1,0 +1,24 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1em;
+
+    nav {
+        a {
+            text-decoration: none;
+
+            &:not(:last-of-type) {
+                margin-right: 1em;
+            }
+
+            &.active-link {
+                color: orange;
+            }
+        }
+    }
+}
+
+main {
+    padding: 1em;
+}
