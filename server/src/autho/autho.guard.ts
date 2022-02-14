@@ -25,10 +25,10 @@ export class AuthoGuard implements CanActivate {
           cache: true,
           rateLimit: true,
           jwksRequestsPerMinute: 5,
-          jwksUri: `${this.AUTH0_DOMAIN}.well-known/jwks.json`,
+          jwksUri: `${this.AUTH0_DOMAIN}/.well-known/jwks.json`,
         }),
-        audience:this.AUTH0_AUDIENCE,
-        issuer: this.AUTH0_DOMAIN,
+        audience: this.AUTH0_AUDIENCE,
+        issuer:`${this.AUTH0_DOMAIN}/`,
         algorithms: ['RS256'],
       })
     );
