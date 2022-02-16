@@ -14,8 +14,5 @@ export const authConfig: AuthConfig = {
     showDebugInformation: true, // Also requires enabling "Verbose" level in devtools
     clearHashAfterLogin: false, // https://github.com/manfredsteyer/angular-oauth2-oidc/issues/457#issuecomment-431807040,
     nonceStateSeparator: 'semicolon', // Real semicolon gets mangled by IdentityServer's URI encoding
-    customQueryParams: {
-        // Your API's name
-        audience: 'http://localhost:3001/api/'
-    },
+    customQueryParams: { audience: 'http://localhost:3001/api/' }, // needed for auth0
 };

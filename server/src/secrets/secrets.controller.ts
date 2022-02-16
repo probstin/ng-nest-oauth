@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { AuthoGuard } from 'src/autho/autho.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('secrets')
 export class SecretsController {
@@ -9,7 +9,7 @@ export class SecretsController {
         return { message: "This isn't a secret" };
     }
 
-    @UseGuards(AuthoGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Get('/secret')
     getSecret(): any {
         return { message: "Shhhh, it's a secret" };
