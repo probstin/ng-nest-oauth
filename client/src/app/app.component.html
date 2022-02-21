@@ -5,8 +5,8 @@
     </nav>
     <span class="flex-spacer"></span>
     <span>
-        <ng-container *ngIf="identityClaims; else unauthenticated">
-            {{'Logged in as: ' + identityClaims?.name}}
+        <ng-container *ngIf="userProfile$ | async as userProfile; else unauthenticated">
+            {{'Logged in as: ' + userProfile?.username}}
         </ng-container>
     </span>
 </div>

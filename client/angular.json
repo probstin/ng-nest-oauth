@@ -28,8 +28,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              "src/silent-refresh.html"
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"

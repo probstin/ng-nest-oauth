@@ -15,4 +15,10 @@ export class SecretsController {
         return { message: "Shhhh, it's a secret" };
     }
 
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/userProfile')
+    getUserProfile(): any {
+        return { username: "Shhhh, it's a secret" };
+    }
+
 }

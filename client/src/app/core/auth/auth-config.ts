@@ -2,17 +2,10 @@ import { AuthConfig } from 'angular-oauth2-oidc';
 
 export const authConfig: AuthConfig = {
     issuer: 'https://dev-y-t10xkr.us.auth0.com/',
-    clientId: 'm7lTqfHkXE1X4FX3saKvmdXb9xycKjgm', // The "Auth Code + PKCE" client
+    clientId: 'kkAyXeYDFTmKinPxYs5ZxdnZb65erQp8',
     responseType: 'code',
     redirectUri: window.location.origin + '/',
-    silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
-    scope: 'openid profile email', // Ask offline_access to support refresh token refreshes
-    useSilentRefresh: true, // Needed for Code Flow to suggest using iframe-based refreshes
-    silentRefreshTimeout: 5000, // For faster testing
-    timeoutFactor: 0.25, // For faster testing
-    sessionChecksEnabled: true,
-    showDebugInformation: true, // Also requires enabling "Verbose" level in devtools
-    clearHashAfterLogin: false, // https://github.com/manfredsteyer/angular-oauth2-oidc/issues/457#issuecomment-431807040,
-    nonceStateSeparator: 'semicolon', // Real semicolon gets mangled by IdentityServer's URI encoding
-    customQueryParams: { audience: 'http://localhost:3001/api/' }, // needed for auth0
+    scope: 'openid profile email offline_access',
+    customQueryParams: { audience: 'http://localhost:3001/api/' },
+    showDebugInformation: true
 };

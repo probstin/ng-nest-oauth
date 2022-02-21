@@ -14,7 +14,9 @@ export class PrivateComponent {
 
   constructor(private _authService: AuthService, private _privateApiService: PrivateApiService) { }
 
+  get expiry(): number { return this._authService.expiration };
   get identityClaims(): { name: string } { return this._authService.identityClaims; }
+  get refreshTimeout(): any { return this._authService.expirationCountdown; }
 
   getSecret(): void {
     this.secret$ = this._privateApiService.getSecret();

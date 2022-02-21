@@ -3,12 +3,10 @@ import { APP_INITIALIZER, ModuleWithProviders, NgModule, Optional, SkipSelf } fr
 import { AuthConfig, OAuthModule, OAuthModuleConfig, OAuthStorage } from 'angular-oauth2-oidc';
 import { authConfig } from './auth/auth-config';
 import { AuthGuard } from './auth/auth-guard.service';
-import { authInitializerFactory } from './auth/auth-initializer.factory';
+import { authInitializerFactory } from './auth/factories/auth-initializer.factory';
 import { AuthService } from './auth/auth.service';
 import { oAuthModuleConfig } from './auth/oauth-module-config';
-
-// localStorage is not available at AOT build time
-export const storageFactory = (): OAuthStorage => localStorage;
+import { storageFactory } from './auth/factories/local-storage.factory';
 
 @NgModule({
   imports: [
@@ -31,9 +29,9 @@ export class CoreModule {
           deps: [AuthService],
           multi: true
         },
-        { provide: AuthConfig, useValue: authConfig },
-        { provide: OAuthModuleConfig, useValue: oAuthModuleConfig },
         { provide: OAuthStorage, useFactory: storageFactory },
+        { provide: AuthConfig, useValue: authConfig },
+        { provide: OAuthModuleConfig, useValue: oAuthModuleConfig }
       ]
     };
   }

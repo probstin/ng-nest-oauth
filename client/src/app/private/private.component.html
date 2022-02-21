@@ -1,5 +1,15 @@
 <p>Welcome, {{identityClaims?.name}}, you've successfully authenticated via Auth0.</p>
+
+<pre>
+Expires: {{expiry | date:'medium'}}
+
+Expires In: {{(refreshTimeout | async )| date: 'mm:ss'}} Seconds
+</pre>
+
 <p>These are your 'claims' that have been shared from your Auth0 authentication.</p>
+
 <pre>{{identityClaims | json}}</pre>
+
 <button (click)="getSecret()">Retrieve a Secret from the API</button>
+
 <p *ngIf="secret$ | async as secret">{{secret}}</p>

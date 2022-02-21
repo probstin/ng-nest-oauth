@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { AuthService } from './core/auth/auth.service';
+import { Observable, of } from 'rxjs';
+import { UserProfile, UserService } from './core/auth/user.service';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +9,12 @@ import { AuthService } from './core/auth/auth.service';
 })
 export class AppComponent {
 
-  constructor(private _authService: AuthService) { }
+  userProfile$: Observable<UserProfile> = of();
 
-  get identityClaims(): { name: string } { return this._authService.identityClaims; }
+  constructor(private _userSerice: UserService) { }
+
+  ngOnInit(): void {
+    this.userProfile$ = this._userSerice.userProfile$;
+  }
 
 }
