@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
-import { BehaviorSubject, combineLatest, filter, interval, map, mapTo, Observable, of, scan, takeWhile, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, interval, map, mapTo, Observable, of, scan, takeWhile } from 'rxjs';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -43,19 +43,19 @@ export class AuthService {
     });
 
     this._oauthService.events
-      .pipe(filter((e: any) => e instanceof OAuthErrorEvent))
-      .subscribe(event => console.error(`OAuthErrorEvent: ${event.type}`));
+      .pipe(filter(e => e instanceof OAuthErrorEvent))
+      .subscribe(e => console.error(`OAuthErrorEvent: ${e.type}`));
 
     this._oauthService.events
       .subscribe(_ => this.isAuthenticatedSubject$.next(this._oauthService.hasValidAccessToken()));
 
     this._oauthService.events
-      .pipe(filter((e: any) => ['token_received'].includes(e.type)))
-      .subscribe((e: any) => this._oauthService.loadUserProfile());
+      .pipe(filter(e => ['token_received'].includes(e.type)))
+      .subscribe(_ => this._oauthService.loadUserProfile());
 
     this._oauthService.events
       .pipe(filter(e => ['session_terminated', 'session_error'].includes(e.type)))
-      .subscribe((e: any) => this._navigateToLoginPage());
+      .subscribe(_ => this._navigateToLoginPage());
 
   }
 
@@ -63,9 +63,9 @@ export class AuthService {
   // login sequence
   // =====================
 
-  public login(): Promise<void> {
+  public login(urlState?: string): Promise<void> {
     return this._oauthService
-      .loadDiscoveryDocumentAndLogin()
+      .loadDiscoveryDocumentAndLogin({ state: urlState })
       .then(() => {
         this.isDoneLoadingSubject$.next(true);
 
@@ -74,9 +74,6 @@ export class AuthService {
           this._startExpiryTimer();
         }
 
-        // Check for the strings 'undefined' and 'null' just to be sure. Our current
-        // login(...) should never have this, but in case someone ever calls
-        // initImplicitFlow(undefined | null) this could happen.
         if (this._oauthService.state && this._oauthService.state !== 'undefined' && this._oauthService.state !== 'null') {
           let stateUrl = this._oauthService.state;
           if (!stateUrl.startsWith('/')) stateUrl = decodeURIComponent(stateUrl);
@@ -107,32 +104,32 @@ export class AuthService {
   }
 
   private _startExpiryTimer() {
-
-    // I have when it expires
-    const expires = this._oauthService.getAccessTokenExpiration();
-
-    // I have the current time
+    const expiry = this._oauthService.getAccessTokenExpiration();
     const current = new Date().getTime();
+    const fullTime = expiry - current;
+    const eightyTime = fullTime * .80;
 
-    // I have the difference between those 2 times
-    const timeout = expires - current;
-
-    // I set a timeout catch
-    setTimeout(() => {
+    const fullTimeout = setTimeout(() => {
       window.alert('TIME IS UP!');
-      this.refreshTokenCountdown = of(null);
       this._oauthService.logOut();
+      setTimeout(() => this.login(this._router.url), 500);
+    }, fullTime);
 
-      setTimeout(() => this.login(), 1000);
+    setTimeout(() => {
+      const confirm = window.confirm('TIME IS ALMOST UP! Click OK to refresh your session.');
+      if (confirm) {
+        this._oauthService.logOut();
+        clearTimeout(fullTimeout);
+        setTimeout(() => this.login(this._router.url), 500);
+      }
+    }, eightyTime);
 
-    }, timeout);
-
-    // I start a countdown
-    this.refreshTokenCountdown = interval(1000).pipe(
-      mapTo(-1000),
-      scan((acc: number, curr: number) => acc + curr, timeout),
-      takeWhile(val => val >= 0),
-    );
+    this.refreshTokenCountdown = interval(1000)
+      .pipe(
+        mapTo(-1000),
+        scan((acc: number, curr: number) => acc + curr, fullTime),
+        takeWhile(val => val >= 0)
+      );
   }
 
 }
